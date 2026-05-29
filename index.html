@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Susan Vieira Confeitaria Artesanal — Bolos e doces feitos com amor em Campinas, SP." />
+  <title>Susan Vieira — Confeitaria Artesanal</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Phosphor Icons (navbar, lista, botões) -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js"></script>
+
+  <!-- Tabler Icons webfont (cherry, cake, cupcake etc.) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+
+  <!-- GLightbox -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follower" id="cursorFollower"></div>
+
+  <!-- LOADER -->
+  <div class="loader" id="loader">
+    <div class="loader__inner">
+      <div class="loader__icon">
+        <!-- Tabler cherry inline SVG -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 24 24"
+             fill="none" stroke="#8B1A4A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M4 16.5a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0 -7 0"/>
+          <path d="M14 18a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/>
+          <path d="M9 13c.366 -2 1.866 -3.873 4.5 -5.6"/>
+          <path d="M17 15c-1.333 -2.333 -2.333 -5.333 -1 -9"/>
+          <path d="M5 6c3.667 -2.667 7.333 -2.667 11 0c-3.667 2.667 -7.333 2.667 -11 0"/>
+        </svg>
+      </div>
+      <div class="loader__bar"><div class="loader__bar-fill"></div></div>
+      <p class="loader__text">Preparando algo especial...</p>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar__logo">
+      <img src="img/logo.png" alt="Susan Vieira Confeitaria" />
+    </div>
+    <ul class="navbar__links">
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#especialidades">Cardápio</a></li>
+      <li><a href="#galeria">Galeria</a></li>
+      <li><a href="#depoimentos">Depoimentos</a></li>
+    </ul>
+    <div class="navbar__cta-wrap">
+    <a href="https://wa.me/5519999474895?text=Ol%C3%A1%20Susan!%20Vim%20pelo%20site%20e%20gostaria%20de%20fazer%20uma%20encomenda" target="_blank" class="btn btn--vinho navbar__cta">
+      <i class="ph ph-whatsapp-logo"></i> Encomendar
+    </a>
+    <button class="navbar__hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><a href="#sobre" class="mobile-link">Sobre</a></li>
+      <li><a href="#especialidades" class="mobile-link">Cardápio</a></li>
+      <li><a href="#galeria" class="mobile-link">Galeria</a></li>
+      <li><a href="#depoimentos" class="mobile-link">Depoimentos</a></li>
+      <li>
+        <a href="https://wa.me/5519999474895?text=Ol%C3%A1%20Susan!%20Vim%20pelo%20site%20e%20gostaria%20de%20fazer%20uma%20encomenda" target="_blank" class="btn btn--vinho">
+          <i class="ph ph-whatsapp-logo"></i> Encomendar
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero__bg">
+      <img src="https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 387w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 687w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 774w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 987w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 1287w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 1374w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=1587&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 1587w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 1887w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 1974w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=2187&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 2187w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=2487&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 2487w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 2574w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 2787w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 3087w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 3174w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 3387w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=3687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 3687w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=3774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 3774w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=3987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 3987w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=4287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 4287w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=4374&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 4374w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=4587&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 4587w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=4887&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 4887w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=4974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 4974w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=5187&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 5187w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=5487&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 5487w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=5574&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 5574w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=5787&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 5787w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=6087&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 6087w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=6174&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 6174w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=6387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 6387w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=6687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 6687w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=6774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 6774w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=6987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 6987w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=7287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 7287w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=7374&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 7374w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=7587&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 7587w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=7887&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 7887w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=7974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 7974w, https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?q=80&w=8000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D 8000w" alt="Bolo artesanal" class="hero__bg-img" />
+      <div class="hero__overlay"></div>
+      <div class="hero__grain"></div>
+    </div>
+
+    <div class="hero__content">
+      <p class="hero__eyebrow">✦ Confeitaria Artesanal em Campinas, SP ✦</p>
+      <img src="img/logo.png" alt="Susan Vieira" class="hero__logo" />
+      <p class="hero__tagline">Feito com afeto,<br /><em>entregue com amor.</em></p>
+      <a href="https://wa.me/5519999474895?text=Ol%C3%A1%20Susan!%20Vim%20pelo%20site%20e%20gostaria%20de%20fazer%20uma%20encomenda" target="_blank" class="btn btn--hero">
+        <i class="ph ph-whatsapp-logo"></i>
+        Fazer minha encomenda
+        <span class="btn__arrow">→</span>
+      </a>
+    </div>
+
+    <!-- 4 ícones ESQUERDA -->
+    <div class="hero__deco hero__deco--L1" aria-hidden="true">
+      <!-- cereja — vinho principal -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#8B1A4A" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <path d="M4 16.5a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0 -7 0"/>
+        <path d="M14 18a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/>
+        <path d="M9 13c.366 -2 1.866 -3.873 4.5 -5.6"/>
+        <path d="M17 15c-1.333 -2.333 -2.333 -5.333 -1 -9"/>
+        <path d="M5 6c3.667 -2.667 7.333 -2.667 11 0c-3.667 2.667 -7.333 2.667 -11 0"/>
+      </svg>
+    </div>
+    <div class="hero__deco hero__deco--L2" aria-hidden="true">
+      <!-- bolo — lilás -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9B3A6B" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <path d="M3 16m0 1a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1z"/>
+        <path d="M3 20v1"/>
+        <path d="M21 20v1"/>
+        <path d="M7 16v-3a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v3"/>
+        <path d="M12 11v-5"/>
+        <path d="M10 6a2 2 0 1 1 4 0"/>
+      </svg>
+    </div>
+    <div class="hero__deco hero__deco--L3" aria-hidden="true">
+      <!-- estrela — dourado, preenchida -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 256 256" fill="#B8935A">
+        <path d="M239.2,97.29a16,16,0,0,0-13.81-11L166,81.17,142.72,25.81h0a15.95,15.95,0,0,0-29.44,0L90.07,81.17,30.61,86.32a16,16,0,0,0-9.11,28.06L66.61,153.8,53.09,212.34a16,16,0,0,0,23.84,17.34l51-31,51.11,31a16,16,0,0,0,23.84-17.34l-13.51-58.6L234.5,114.38A16,16,0,0,0,239.2,97.29Z"/>
+      </svg>
+    </div>
+    <div class="hero__deco hero__deco--L4" aria-hidden="true">
+      <!-- cupcake — vinho escuro -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#6A1238" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <path d="M3 16l2 -7h14l2 7"/>
+        <path d="M3 16h18"/>
+        <path d="M5 16v3a1 1 0 0 0 1 1h12a1 1 0 0 0 1 -1v-3"/>
+        <path d="M9 9c0 -1.5 1 -2 1 -3a1.5 1.5 0 0 0 -3 0"/>
+        <path d="M13 9c0 -1.5 1 -2 1 -3a1.5 1.5 0 0 0 -3 0"/>
+        <path d="M17 9c0 -1.5 1 -2 1 -3a1.5 1.5 0 0 0 -3 0"/>
+      </svg>
+    </div>
+
+    <!-- 4 ícones DIREITA -->
+    <div class="hero__deco hero__deco--R1" aria-hidden="true">
+      <!-- coração — lilás preenchido -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 24 24" fill="#C9A0C0" stroke="#C9A0C0" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+      </svg>
+    </div>
+    <div class="hero__deco hero__deco--R2" aria-hidden="true">
+      <!-- cereja — vinho claro -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#B8285F" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <path d="M4 16.5a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0 -7 0"/>
+        <path d="M14 18a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/>
+        <path d="M9 13c.366 -2 1.866 -3.873 4.5 -5.6"/>
+        <path d="M17 15c-1.333 -2.333 -2.333 -5.333 -1 -9"/>
+        <path d="M5 6c3.667 -2.667 7.333 -2.667 11 0c-3.667 2.667 -7.333 2.667 -11 0"/>
+      </svg>
+    </div>
+    <div class="hero__deco hero__deco--R3" aria-hidden="true">
+      <!-- diamante — dourado -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#B8935A" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <path d="M6 5h12l3 5l-8.5 9.5a.7 .7 0 0 1 -1 0l-8.5 -9.5l3 -5"/>
+        <path d="M10 12l-2 -2.2l.6 -1"/>
+      </svg>
+    </div>
+    <div class="hero__deco hero__deco--R4" aria-hidden="true">
+      <!-- estrela menor — vinho médio -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 256 256" fill="#8B1A4A">
+        <path d="M239.2,97.29a16,16,0,0,0-13.81-11L166,81.17,142.72,25.81h0a15.95,15.95,0,0,0-29.44,0L90.07,81.17,30.61,86.32a16,16,0,0,0-9.11,28.06L66.61,153.8,53.09,212.34a16,16,0,0,0,23.84,17.34l51-31,51.11,31a16,16,0,0,0,23.84-17.34l-13.51-58.6L234.5,114.38A16,16,0,0,0,239.2,97.29Z"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee">
+    <div class="marquee__track">
+      <span>Bolos Artesanais</span><span class="marquee__dot">✦</span>
+      <span>Docinhos de Festa</span><span class="marquee__dot">✦</span>
+      <span>Bolos de Festa</span><span class="marquee__dot">✦</span>
+      <span>Sobremesas</span><span class="marquee__dot">✦</span>
+      <span>Doces Finos</span><span class="marquee__dot">✦</span>
+      <span>Feito com Amor</span><span class="marquee__dot">✦</span>
+      <span>Campinas, SP</span><span class="marquee__dot">✦</span>
+      <span>Bolos Artesanais</span><span class="marquee__dot">✦</span>
+      <span>Docinhos de Festa</span><span class="marquee__dot">✦</span>
+      <span>Bolos de Festa</span><span class="marquee__dot">✦</span>
+      <span>Sobremesas</span><span class="marquee__dot">✦</span>
+      <span>Doces Finos</span><span class="marquee__dot">✦</span>
+      <span>Feito com Amor</span><span class="marquee__dot">✦</span>
+      <span>Campinas, SP</span><span class="marquee__dot">✦</span>
+    </div>
+  </div>
+
+  <!-- SOBRE -->
+  <section class="sobre" id="sobre">
+    <div class="sobre__container">
+      <div class="sobre__foto-wrap">
+        <div class="sobre__foto-frame">
+          <img src="https://images.unsplash.com/photo-1731576089270-9e806089a40f?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Susan Vieira" class="sobre__foto" />
+        </div>
+        <div class="sobre__foto-deco">
+          <!-- cereja Tabler -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8B1A4A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <path d="M4 16.5a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0 -7 0"/>
+            <path d="M14 18a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/>
+            <path d="M9 13c.366 -2 1.866 -3.873 4.5 -5.6"/>
+            <path d="M17 15c-1.333 -2.333 -2.333 -5.333 -1 -9"/>
+            <path d="M5 6c3.667 -2.667 7.333 -2.667 11 0c-3.667 2.667 -7.333 2.667 -11 0"/>
+          </svg>
+        </div>
+        <div class="sobre__badge">
+          <i class="ph ph-medal"></i>
+          <span>Formada em<br/>Gastronomia</span>
+        </div>
+      </div>
+
+      <div class="sobre__texto">
+        <p class="sobre__pretitulo">✦ Quem sou eu</p>
+        <h2 class="sobre__titulo">Olá, eu sou a <em>Susan</em>
+          <svg class="titulo-cherry" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#8B1A4A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <path d="M4 16.5a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0 -7 0"/>
+            <path d="M14 18a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/>
+            <path d="M9 13c.366 -2 1.866 -3.873 4.5 -5.6"/>
+            <path d="M17 15c-1.333 -2.333 -2.333 -5.333 -1 -9"/>
+            <path d="M5 6c3.667 -2.667 7.333 -2.667 11 0c-3.667 2.667 -7.333 2.667 -11 0"/>
+          </svg>
+        </h2>
+        <p class="sobre__desc">
+          Minha história com a confeitaria começou muito antes do diploma — nasceu na cozinha de casa, no cheirinho de bolo que tomava conta do corredor e nas risadas em volta da mesa.
+        </p>
+        <p class="sobre__desc">
+          Hoje, com formação em Gastronomia e anos de prática artesanal, transformo cada encomenda em uma experiência única: pensada, cuidada e feita com ingredientes selecionados do início ao fim.
+        </p>
+        <ul class="sobre__lista">
+          <li><i class="ph ph-graduation-cap"></i> Formada em Gastronomia</li>
+          <li><i class="ph ph-map-pin"></i> Campinas, SP</li>
+          <li><i class="ph ph-heart"></i> Cada peça feita à mão, com carinho</li>
+          <li><i class="ph ph-star"></i> Especialista em ocasiões especiais</li>
+        </ul>
+        <a href="https://wa.me/5519999474895?text=Ol%C3%A1%20Susan!%20Vim%20pelo%20site%20e%20gostaria%20de%20conversar%20sobre%20uma%20encomenda" target="_blank" class="btn btn--outline">
+          Vamos conversar <i class="ph ph-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ESPECIALIDADES / CARDÁPIO -->
+  <section class="especialidades" id="especialidades">
+    <div class="especialidades__header">
+      <p class="section-pretitulo">✦ Os queridinhos</p>
+      <h2 class="section-titulo">Mais <em>Pedidos</em></h2>
+      <p class="section-sub">Os favoritos que nunca saem do cardápio — e a gente entende o porquê</p>
+    </div>
+    <div class="especialidades__grid" id="especialidadesGrid"></div>
+  </section>
+
+  <!-- GALERIA -->
+  <section class="galeria" id="galeria">
+    <div class="galeria__header">
+      <p class="section-pretitulo">✦ Nosso trabalho</p>
+      <h2 class="section-titulo">Galeria de <em>Criações</em></h2>
+    </div>
+    <div class="galeria__grid" id="galeriaGrid"></div>
+    <div class="galeria__footer">
+      <a href="https://instagram.com/susanvieiraconfeitaria" target="_blank" class="btn btn--outline">
+        <i class="ph ph-instagram-logo"></i> Ver mais no Instagram
+      </a>
+    </div>
+  </section>
+
+  <!-- DEPOIMENTOS -->
+  <section class="depoimentos" id="depoimentos">
+    <div class="depoimentos__header">
+      <p class="section-pretitulo">✦ Amor em forma de palavras</p>
+      <h2 class="section-titulo">O que dizem nossos <em>clientes</em></h2>
+    </div>
+    <div class="dep-carousel-wrap">
+      <div class="dep-stage" id="depStage"></div>
+    </div>
+    <div class="depoimentos__nav">
+      <button class="dep-btn" id="depPrev" aria-label="Anterior"><i class="ph ph-arrow-left"></i></button>
+      <div class="depoimentos__dots" id="depDots"></div>
+      <button class="dep-btn" id="depNext" aria-label="Próximo"><i class="ph ph-arrow-right"></i></button>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="cta-final">
+    <div class="cta-final__bg"><div class="cta-final__grain"></div></div>
+    <div class="cta-final__content">
+      <div class="cta-final__cherry-icon">
+        <!-- cereja grande decorativa -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M4 16.5a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0 -7 0"/>
+          <path d="M14 18a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/>
+          <path d="M9 13c.366 -2 1.866 -3.873 4.5 -5.6"/>
+          <path d="M17 15c-1.333 -2.333 -2.333 -5.333 -1 -9"/>
+          <path d="M5 6c3.667 -2.667 7.333 -2.667 11 0c-3.667 2.667 -7.333 2.667 -11 0"/>
+        </svg>
+      </div>
+      <h2 class="cta-final__titulo">Pronta para adoçar<br/><em>o seu momento?</em></h2>
+      <p class="cta-final__sub">Entre em contato e vamos criar juntos algo especial para a sua ocasião.</p>
+      <a href="https://wa.me/5519999474895?text=Ol%C3%A1%20Susan!%20Vim%20pelo%20site%20e%20gostaria%20de%20fazer%20uma%20encomenda" target="_blank" class="btn btn--white">
+        <i class="ph ph-whatsapp-logo"></i>
+        Encomendar pelo WhatsApp
+      </a>
+      <div class="cta-final__info">
+        <span><i class="ph ph-map-pin"></i> Campinas, SP</span>
+        <span><i class="ph ph-instagram-logo"></i> @susanvieiraconfeitaria</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <img src="img/logo.png" alt="Susan Vieira" class="footer__logo" />
+      <p class="footer__copy">© 2025 Susan Vieira — Confeitaria Artesanal · Campinas, SP</p>
+      <p class="footer__dev">Desenvolvido por <a href="https://instagram.com/" target="_blank">Marco Júnior</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>
