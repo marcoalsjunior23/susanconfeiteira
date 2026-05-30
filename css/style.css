@@ -1324,20 +1324,9 @@ body:has(button:hover) .cursor-follower { width: 56px; height: 56px; opacity: 0.
 @media (max-width: 600px) {
   .depoimentos { padding: 80px 0 72px; }
   .depoimentos__header { padding: 0 24px; margin-bottom: 40px; }
-  /* altura controlada pelo JS — sem fixo para não cortar texto */
-  .dep-carousel-wrap { height: auto; min-height: 200px; overflow: visible; }
-  .dep-stage { position: relative; }
-  .card-dep {
-    position: relative;
-    width: calc(100vw - 48px);
-    left: 0;
-    margin: 0 24px;
-    padding: 28px 24px;
-    /* no mobile o card central fica no fluxo normal */
-  }
-  /* esconde todos exceto o ativo — o JS já faz via autoAlpha, mas garante no CSS */
-  .card-dep { display: none; }
-  .card-dep.dep-ativo { display: block; }
+  /* altura ajustada pelo JS — overflow:hidden evita scroll horizontal */
+  .dep-carousel-wrap { height: 420px; overflow: hidden; }
+  .card-dep { width: calc(100vw - 48px); left: 24px; padding: 28px 24px; }
 }
 
 

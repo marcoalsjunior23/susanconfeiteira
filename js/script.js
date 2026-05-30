@@ -241,6 +241,11 @@ gsap.registerPlugin(ScrollTrigger);
 
 window.addEventListener('load', () => {
   const loader = document.getElementById('loader');
+  // Minimum display time so the loader doesn't flash — but don't wait 1.8s artificially
+  const minTime = 600;
+  const loadedAt = performance.now();
+  const elapsed = loadedAt - (window._pageStartTime || loadedAt);
+  const remaining = Math.max(0, minTime - elapsed);
 
   setTimeout(() => {
     gsap.to(loader, {
@@ -252,7 +257,7 @@ window.addEventListener('load', () => {
         initHeroAnim();
       }
     });
-  }, 1800);
+  }, remaining);
 });
 
 /* ─── INIT — tudo dentro do DOMContentLoaded ────────────── */
@@ -710,7 +715,7 @@ function renderDepoimentos() {
   if (!stage || !dots) return;
 
   stage.innerHTML = depoimentos.map((dep, i) => `
-    <div class="card-dep${i === 0 ? ' dep-ativo' : ''}" data-index="${i}">
+    <div class="card-dep" data-index="${i}">
       <span class="card-dep__aspas">"</span>
       <p class="card-dep__texto">${dep.texto}</p>
       <div class="card-dep__stars">${starsHTML(dep.stars)}</div>
@@ -754,39 +759,35 @@ function renderDepoimentos() {
 }
 
 function posicionarCards(animate) {
-  const cards   = document.querySelectorAll('#depStage .card-dep');
-  const wrap    = document.querySelector('.dep-carousel-wrap');
-  const total   = depoimentos.length;
-  const mobile  = window.innerWidth <= 600;
-  // No mobile os laterais saem para fora da tela, no desktop ficam à vista
-  const xOffset = mobile ? window.innerWidth : 420;
+  const cards  = document.querySelectorAll('#depStage .card-dep');
+  const wrap   = document.querySelector('.dep-carousel-wrap');
+  const total  = depoimentos.length;
+  const mobile = window.innerWidth <= 600;
+  const xSide  = mobile ? window.innerWidth : 420;
 
   cards.forEach((card, i) => {
     const pos = ((i - depAtual) % total + total) % total;
     let cfg;
     if (pos === 0) {
-      cfg = { x: 0,        scale: 1,    autoAlpha: 1,   zIndex: 10, y: 0,  pointerEvents: 'auto'  };
+      cfg = { x: 0,      scale: 1,    autoAlpha: 1,   zIndex: 10, y: 0,  pointerEvents: 'auto'  };
     } else if (pos === 1) {
-      cfg = { x: xOffset,  scale: 0.76, autoAlpha: mobile ? 0 : 0.5, zIndex: 5,  y: 28, pointerEvents: 'none' };
+      cfg = { x: xSide,  scale: 0.76, autoAlpha: mobile ? 0 : 0.5, zIndex: 5, y: 28, pointerEvents: 'none' };
     } else if (pos === total - 1) {
-      cfg = { x: -xOffset, scale: 0.76, autoAlpha: mobile ? 0 : 0.5, zIndex: 5,  y: 28, pointerEvents: 'none' };
+      cfg = { x: -xSide, scale: 0.76, autoAlpha: mobile ? 0 : 0.5, zIndex: 5, y: 28, pointerEvents: 'none' };
     } else {
-      cfg = { x: 0,        scale: 0.55, autoAlpha: 0,   zIndex: 1,  y: 0,  pointerEvents: 'none' };
+      cfg = { x: 0,      scale: 0.55, autoAlpha: 0,   zIndex: 1,  y: 0,  pointerEvents: 'none' };
     }
-
-    if (animate) {
-      gsap.to(card, { ...cfg, duration: 0.65, ease: 'power3.inOut' });
-    } else {
-      gsap.set(card, cfg);
-    }
+    animate ? gsap.to(card, { ...cfg, duration: 0.65, ease: 'power3.inOut' })
+            : gsap.set(card, cfg);
   });
 
-  // Ajusta a altura do container para o card central no mobile
+  // Mobile: ajusta altura do container ao card ativo para não cortar texto
   if (mobile && wrap) {
-    const activeCard = document.querySelector('#depStage .card-dep[data-index="' + depAtual + '"]');
-    if (activeCard) {
-      const h = activeCard.scrollHeight;
-      gsap.set(wrap, { height: h });
+    const active = cards[depAtual];
+    if (active) {
+      // offsetHeight funciona mesmo com visibility:hidden — sem reflow extra
+      const h = active.offsetHeight;
+      if (h > 0) gsap.set(wrap, { height: h });
     }
   }
 }
@@ -794,12 +795,6 @@ function posicionarCards(animate) {
 function irParaDep(index) {
   depAtual = index;
   posicionarCards(true);
-
-  // classe dep-ativo controla visibilidade no mobile via CSS
-  document.querySelectorAll('#depStage .card-dep').forEach((c, i) => {
-    c.classList.toggle('dep-ativo', i === index);
-  });
-
   document.querySelectorAll('.dep-dot').forEach((d, i) => {
     d.classList.toggle('active', i === index);
   });
