@@ -239,21 +239,25 @@ gsap.registerPlugin(ScrollTrigger);
 
 /* ─── LOADER ────────────────────────────────────────────── */
 
-window.addEventListener('load', () => {
+function esconderLoader() {
   const loader = document.getElementById('loader');
+  if (!loader || loader.style.display === 'none') return;
+  gsap.to(loader, {
+    opacity: 0,
+    duration: 0.5,
+    ease: 'power2.inOut',
+    onComplete: () => {
+      loader.style.display = 'none';
+      initHeroAnim();
+    }
+  });
+}
 
-  setTimeout(() => {
-    gsap.to(loader, {
-      opacity: 0,
-      duration: 0.7,
-      ease: 'power2.inOut',
-      onComplete: () => {
-        loader.style.display = 'none';
-        initHeroAnim();
-      }
-    });
-  }, 1800);
-});
+// Sai assim que tudo carregar
+window.addEventListener('load', () => setTimeout(esconderLoader, 400));
+
+// Fallback: se alguma imagem travar, sai em 3s de qualquer jeito
+setTimeout(esconderLoader, 3000);
 
 /* ─── INIT — tudo dentro do DOMContentLoaded ────────────── */
 
@@ -415,8 +419,18 @@ function initHeroAnim() {
     heroMouseY = e.clientY;
   });
 
-  // Loop de física — roda todo frame
+  // Loop de física — para quando hero sai do viewport
+  let decoRaf;
+  let heroVisible = true;
+
+  const heroObserver = new IntersectionObserver(([entry]) => {
+    heroVisible = entry.isIntersecting;
+    if (heroVisible && !decoRaf) decoPhysics();
+  }, { threshold: 0 });
+  heroObserver.observe(hero);
+
   function decoPhysics() {
+    if (!heroVisible) { decoRaf = null; return; }
     decoState.forEach(state => {
       const rect  = state.el.getBoundingClientRect();
       const cx    = rect.left + rect.width  / 2;
@@ -429,19 +443,16 @@ function initHeroAnim() {
       let targetY = 0;
 
       if (dist < REPULSE_RADIUS && dist > 0) {
-        // Repulsão: quanto mais perto, mais forte
         const force = (1 - dist / REPULSE_RADIUS) * REPULSE_FORCE;
         targetX = -(dx / dist) * force;
         targetY = -(dy / dist) * force;
       } else if (dist < ATTRACT_RADIUS) {
-        // Atração suave na zona intermediária
         const t     = (dist - REPULSE_RADIUS) / (ATTRACT_RADIUS - REPULSE_RADIUS);
         const force = (1 - t) * ATTRACT_FORCE;
         targetX = (dx / dist) * force * 0.4;
         targetY = (dy / dist) * force * 0.4;
       }
 
-      // Mola com amortecimento (spring physics)
       const stiffness  = 0.14;
       const damping    = 0.72;
       state.vx = state.vx * damping + (targetX - state.ox) * stiffness;
@@ -449,11 +460,10 @@ function initHeroAnim() {
       state.ox += state.vx;
       state.oy += state.vy;
 
-      // Aplica sem sobrescrever o CSS animation — usa translate separado
       state.el.style.translate = `${state.ox.toFixed(2)}px ${state.oy.toFixed(2)}px`;
     });
 
-    requestAnimationFrame(decoPhysics);
+    decoRaf = requestAnimationFrame(decoPhysics);
   }
 
   decoPhysics();
@@ -786,5 +796,3 @@ function irParaDep(index) {
     d.classList.toggle('active', i === index);
   });
 }
-
-

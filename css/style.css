@@ -1449,6 +1449,7 @@ body:has(button:hover) .cursor-follower { width: 56px; height: 56px; opacity: 0.
   .navbar__hamburger { display: flex; }
 
   .hero__deco--1, .hero__deco--3 { font-size: 2rem; }
+  .hero__deco { display: none; }
 
   .sobre { padding: 80px 24px; }
   .sobre__container {
