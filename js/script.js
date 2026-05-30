@@ -241,11 +241,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 window.addEventListener('load', () => {
   const loader = document.getElementById('loader');
-  // Minimum display time so the loader doesn't flash — but don't wait 1.8s artificially
-  const minTime = 600;
-  const loadedAt = performance.now();
-  const elapsed = loadedAt - (window._pageStartTime || loadedAt);
-  const remaining = Math.max(0, minTime - elapsed);
 
   setTimeout(() => {
     gsap.to(loader, {
@@ -257,7 +252,7 @@ window.addEventListener('load', () => {
         initHeroAnim();
       }
     });
-  }, remaining);
+  }, 1800);
 });
 
 /* ─── INIT — tudo dentro do DOMContentLoaded ────────────── */
@@ -785,9 +780,9 @@ function posicionarCards(animate) {
   if (mobile && wrap) {
     const active = cards[depAtual];
     if (active) {
-      // offsetHeight funciona mesmo com visibility:hidden — sem reflow extra
-      const h = active.offsetHeight;
-      if (h > 0) gsap.set(wrap, { height: h });
+      // scrollHeight é confiável mesmo com visibility:hidden
+      const h = active.scrollHeight;
+      if (h > 0) gsap.set(wrap, { height: h + 8 });
     }
   }
 }
