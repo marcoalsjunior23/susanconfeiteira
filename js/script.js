@@ -239,25 +239,21 @@ gsap.registerPlugin(ScrollTrigger);
 
 /* ─── LOADER ────────────────────────────────────────────── */
 
-function esconderLoader() {
+window.addEventListener('load', () => {
   const loader = document.getElementById('loader');
-  if (!loader || loader.style.display === 'none') return;
-  gsap.to(loader, {
-    opacity: 0,
-    duration: 0.5,
-    ease: 'power2.inOut',
-    onComplete: () => {
-      loader.style.display = 'none';
-      initHeroAnim();
-    }
-  });
-}
 
-// Sai assim que tudo carregar
-window.addEventListener('load', () => setTimeout(esconderLoader, 400));
-
-// Fallback: se alguma imagem travar, sai em 3s de qualquer jeito
-setTimeout(esconderLoader, 3000);
+  setTimeout(() => {
+    gsap.to(loader, {
+      opacity: 0,
+      duration: 0.7,
+      ease: 'power2.inOut',
+      onComplete: () => {
+        loader.style.display = 'none';
+        initHeroAnim();
+      }
+    });
+  }, 1800);
+});
 
 /* ─── INIT — tudo dentro do DOMContentLoaded ────────────── */
 
@@ -419,18 +415,8 @@ function initHeroAnim() {
     heroMouseY = e.clientY;
   });
 
-  // Loop de física — para quando hero sai do viewport
-  let decoRaf;
-  let heroVisible = true;
-
-  const heroObserver = new IntersectionObserver(([entry]) => {
-    heroVisible = entry.isIntersecting;
-    if (heroVisible && !decoRaf) decoPhysics();
-  }, { threshold: 0 });
-  heroObserver.observe(hero);
-
+  // Loop de física — roda todo frame
   function decoPhysics() {
-    if (!heroVisible) { decoRaf = null; return; }
     decoState.forEach(state => {
       const rect  = state.el.getBoundingClientRect();
       const cx    = rect.left + rect.width  / 2;
@@ -443,16 +429,19 @@ function initHeroAnim() {
       let targetY = 0;
 
       if (dist < REPULSE_RADIUS && dist > 0) {
+        // Repulsão: quanto mais perto, mais forte
         const force = (1 - dist / REPULSE_RADIUS) * REPULSE_FORCE;
         targetX = -(dx / dist) * force;
         targetY = -(dy / dist) * force;
       } else if (dist < ATTRACT_RADIUS) {
+        // Atração suave na zona intermediária
         const t     = (dist - REPULSE_RADIUS) / (ATTRACT_RADIUS - REPULSE_RADIUS);
         const force = (1 - t) * ATTRACT_FORCE;
         targetX = (dx / dist) * force * 0.4;
         targetY = (dy / dist) * force * 0.4;
       }
 
+      // Mola com amortecimento (spring physics)
       const stiffness  = 0.14;
       const damping    = 0.72;
       state.vx = state.vx * damping + (targetX - state.ox) * stiffness;
@@ -460,10 +449,11 @@ function initHeroAnim() {
       state.ox += state.vx;
       state.oy += state.vy;
 
+      // Aplica sem sobrescrever o CSS animation — usa translate separado
       state.el.style.translate = `${state.ox.toFixed(2)}px ${state.oy.toFixed(2)}px`;
     });
 
-    decoRaf = requestAnimationFrame(decoPhysics);
+    requestAnimationFrame(decoPhysics);
   }
 
   decoPhysics();
@@ -720,7 +710,7 @@ function renderDepoimentos() {
   if (!stage || !dots) return;
 
   stage.innerHTML = depoimentos.map((dep, i) => `
-    <div class="card-dep" data-index="${i}">
+    <div class="card-dep${i === 0 ? ' dep-ativo' : ''}" data-index="${i}">
       <span class="card-dep__aspas">"</span>
       <p class="card-dep__texto">${dep.texto}</p>
       <div class="card-dep__stars">${starsHTML(dep.stars)}</div>
@@ -764,21 +754,24 @@ function renderDepoimentos() {
 }
 
 function posicionarCards(animate) {
-  const cards = document.querySelectorAll('#depStage .card-dep');
-  const total = depoimentos.length;
+  const cards   = document.querySelectorAll('#depStage .card-dep');
+  const wrap    = document.querySelector('.dep-carousel-wrap');
+  const total   = depoimentos.length;
+  const mobile  = window.innerWidth <= 600;
+  // No mobile os laterais saem para fora da tela, no desktop ficam à vista
+  const xOffset = mobile ? window.innerWidth : 420;
 
   cards.forEach((card, i) => {
     const pos = ((i - depAtual) % total + total) % total;
-    // pos 0 = centro, 1 = direita, total-1 = esquerda, resto = oculto
     let cfg;
     if (pos === 0) {
-      cfg = { x: 0,    scale: 1,    autoAlpha: 1,   zIndex: 10, y: 0,  pointerEvents: 'auto'  };
+      cfg = { x: 0,        scale: 1,    autoAlpha: 1,   zIndex: 10, y: 0,  pointerEvents: 'auto'  };
     } else if (pos === 1) {
-      cfg = { x: 420,  scale: 0.76, autoAlpha: 0.5, zIndex: 5,  y: 28, pointerEvents: 'none' };
+      cfg = { x: xOffset,  scale: 0.76, autoAlpha: mobile ? 0 : 0.5, zIndex: 5,  y: 28, pointerEvents: 'none' };
     } else if (pos === total - 1) {
-      cfg = { x: -420, scale: 0.76, autoAlpha: 0.5, zIndex: 5,  y: 28, pointerEvents: 'none' };
+      cfg = { x: -xOffset, scale: 0.76, autoAlpha: mobile ? 0 : 0.5, zIndex: 5,  y: 28, pointerEvents: 'none' };
     } else {
-      cfg = { x: 0,    scale: 0.55, autoAlpha: 0,   zIndex: 1,  y: 0,  pointerEvents: 'none' };
+      cfg = { x: 0,        scale: 0.55, autoAlpha: 0,   zIndex: 1,  y: 0,  pointerEvents: 'none' };
     }
 
     if (animate) {
@@ -787,11 +780,26 @@ function posicionarCards(animate) {
       gsap.set(card, cfg);
     }
   });
+
+  // Ajusta a altura do container para o card central no mobile
+  if (mobile && wrap) {
+    const activeCard = document.querySelector('#depStage .card-dep[data-index="' + depAtual + '"]');
+    if (activeCard) {
+      const h = activeCard.scrollHeight;
+      gsap.set(wrap, { height: h });
+    }
+  }
 }
 
 function irParaDep(index) {
   depAtual = index;
   posicionarCards(true);
+
+  // classe dep-ativo controla visibilidade no mobile via CSS
+  document.querySelectorAll('#depStage .card-dep').forEach((c, i) => {
+    c.classList.toggle('dep-ativo', i === index);
+  });
+
   document.querySelectorAll('.dep-dot').forEach((d, i) => {
     d.classList.toggle('active', i === index);
   });

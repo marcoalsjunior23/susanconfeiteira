@@ -1324,8 +1324,20 @@ body:has(button:hover) .cursor-follower { width: 56px; height: 56px; opacity: 0.
 @media (max-width: 600px) {
   .depoimentos { padding: 80px 0 72px; }
   .depoimentos__header { padding: 0 24px; margin-bottom: 40px; }
-  .dep-carousel-wrap { height: 500px; }
-  .card-dep { width: calc(100vw - 48px); left: 24px; padding: 32px 24px; }
+  /* altura controlada pelo JS — sem fixo para não cortar texto */
+  .dep-carousel-wrap { height: auto; min-height: 200px; overflow: visible; }
+  .dep-stage { position: relative; }
+  .card-dep {
+    position: relative;
+    width: calc(100vw - 48px);
+    left: 0;
+    margin: 0 24px;
+    padding: 28px 24px;
+    /* no mobile o card central fica no fluxo normal */
+  }
+  /* esconde todos exceto o ativo — o JS já faz via autoAlpha, mas garante no CSS */
+  .card-dep { display: none; }
+  .card-dep.dep-ativo { display: block; }
 }
 
 
@@ -1449,7 +1461,6 @@ body:has(button:hover) .cursor-follower { width: 56px; height: 56px; opacity: 0.
   .navbar__hamburger { display: flex; }
 
   .hero__deco--1, .hero__deco--3 { font-size: 2rem; }
-  .hero__deco { display: none; }
 
   .sobre { padding: 80px 24px; }
   .sobre__container {
