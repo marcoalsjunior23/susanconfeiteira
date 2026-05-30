@@ -520,6 +520,10 @@ body:has(button:hover) .cursor-follower { width: 56px; height: 56px; opacity: 0.
   will-change: transform;
 }
 
+@media (max-width: 768px) {
+  .hero__deco { display: none !important; }
+}
+
 .hero__deco:hover {
   filter: drop-shadow(0 6px 20px rgba(139,26,74,0.5));
 }
@@ -1196,7 +1200,7 @@ body:has(button:hover) .cursor-follower { width: 56px; height: 56px; opacity: 0.
   padding: 0 48px;
 }
 
-/* ── DESKTOP: carrossel GSAP com cards absolutos ── */
+/* Stage: todos os cards posicionados absolutamente */
 .dep-carousel-wrap {
   position: relative;
   width: 100%;
@@ -1269,11 +1273,11 @@ body:has(button:hover) .cursor-follower { width: 56px; height: 56px; opacity: 0.
 .card-dep__ocasiao {
   font-family: var(--fonte-sub);
   font-size: 0.82rem;
-  color: var(--texto-suave);
+  color: var(--texto-leve);
   font-style: italic;
 }
 
-/* Nav (dots + setas) — desktop e mobile */
+/* Nav */
 .depoimentos__nav {
   display: flex;
   align-items: center;
@@ -1317,51 +1321,16 @@ body:has(button:hover) .cursor-follower { width: 56px; height: 56px; opacity: 0.
 .dep-dot.active { background: var(--vinho); transform: scale(1.45); }
 
 @media (max-width: 900px) {
-  .dep-carousel-wrap { height: 450px; overflow: hidden; }
+  .dep-carousel-wrap { height: 450px; }
   .card-dep { width: 460px; left: calc(50% - 230px); padding: 36px 32px; }
 }
 
-/* ── MOBILE: scroll-snap nativo — sem conflito com GSAP ── */
 @media (max-width: 600px) {
-  .depoimentos { padding: 80px 0 64px; }
-  .depoimentos__header { padding: 0 24px; margin-bottom: 36px; }
-
-  /* Wrap vira trilho de scroll horizontal */
-  .dep-carousel-wrap {
-    display: flex;
-    overflow-x: scroll;
-    overflow-y: visible;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    height: auto;
-    gap: 16px;
-    padding: 8px 24px 16px;
-  }
-  .dep-carousel-wrap::-webkit-scrollbar { display: none; }
-
-  /* Stage some — os cards ficam direto no wrap */
-  .dep-stage { display: contents; }
-
-  /* Cada card ocupa a largura da tela e snappa */
-  .card-dep {
-    position: relative;
-    left: auto;
-    top: auto;
-    transform: none !important;
-    width: calc(100vw - 48px);
-    flex: 0 0 calc(100vw - 48px);
-    scroll-snap-align: center;
-    padding: 28px 24px;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-    z-index: auto !important;
-  }
-
-  /* Nav: esconde setas, mantém dots para indicar posição */
-  .dep-btn { display: none; }
-  .depoimentos__nav { margin-top: 16px; }
+  .depoimentos { padding: 80px 0 72px; }
+  .depoimentos__header { padding: 0 24px; margin-bottom: 40px; }
+  /* altura ajustada pelo JS — overflow:hidden evita scroll horizontal */
+  .dep-carousel-wrap { height: 420px; overflow: hidden; }
+  .card-dep { width: calc(100vw - 48px); left: 24px; padding: 28px 24px; }
 }
 
 

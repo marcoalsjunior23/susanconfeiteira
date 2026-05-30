@@ -379,91 +379,83 @@ function initHeroAnim() {
   .to('.hero__content .btn',{ opacity: 1, y: 0, duration: 0.7 }, '-=0.3')
   .to('.hero__scroll',      { opacity: 1, y: 0, duration: 0.6 }, '-=0.2')
 
-  // 8 decos entram com stagger + scale
-  .fromTo(
-    ['.hero__deco--L1','.hero__deco--L2','.hero__deco--L3','.hero__deco--L4',
-     '.hero__deco--R1','.hero__deco--R2','.hero__deco--R3','.hero__deco--R4'],
-    { opacity: 0, scale: 0.4, rotation: -15 },
-    { opacity: 0.7, scale: 1, rotation: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.7)' },
-    '-=0.8'
-  );
+  // 8 decos entram com stagger + scale — só desktop
+  if (window.innerWidth > 768) {
+    tl.fromTo(
+      ['.hero__deco--L1','.hero__deco--L2','.hero__deco--L3','.hero__deco--L4',
+       '.hero__deco--R1','.hero__deco--R2','.hero__deco--R3','.hero__deco--R4'],
+      { opacity: 0, scale: 0.4, rotation: -15 },
+      { opacity: 0.7, scale: 1, rotation: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.7)' },
+      '-=0.8'
+    );
 
-  // ── INTERAÇÃO MAGNÉTICA COM O CURSOR ─────────────────────
-  // Cada ícone tem sua posição original e reage ao cursor:
-  // — perto (< raio de repulsão): foge do cursor com força proporcional
-  // — longe: volta suavemente para a posição original com mola
+    // ── INTERAÇÃO MAGNÉTICA COM O CURSOR ─────────────────────
+    const decos = document.querySelectorAll('.hero__deco');
+    const REPULSE_RADIUS = 140;
+    const REPULSE_FORCE  = 90;
+    const ATTRACT_RADIUS = 220;
+    const ATTRACT_FORCE  = 18;
 
-  const decos = document.querySelectorAll('.hero__deco');
-  const REPULSE_RADIUS = 140; // px — distância para ativar repulsão
-  const REPULSE_FORCE  = 90;  // px — deslocamento máximo
-  const ATTRACT_RADIUS = 220; // px — distância para atração suave
-  const ATTRACT_FORCE  = 18;  // px — atração máxima
+    const decoState = Array.from(decos).map(el => ({
+      el,
+      vx: 0, vy: 0,
+      ox: 0, oy: 0
+    }));
 
-  // Guarda o estado de cada ícone
-  const decoState = Array.from(decos).map(el => ({
-    el,
-    vx: 0, vy: 0,   // velocidade acumulada (inércia)
-    ox: 0, oy: 0    // offset atual
-  }));
+    let heroMouseX = window.innerWidth / 2;
+    let heroMouseY = window.innerHeight / 2;
 
-  let heroMouseX = window.innerWidth / 2;
-  let heroMouseY = window.innerHeight / 2;
-
-  const hero = document.getElementById('hero');
-  hero.addEventListener('mousemove', (e) => {
-    heroMouseX = e.clientX;
-    heroMouseY = e.clientY;
-  });
-
-  // Loop de física — roda todo frame
-  function decoPhysics() {
-    decoState.forEach(state => {
-      const rect  = state.el.getBoundingClientRect();
-      const cx    = rect.left + rect.width  / 2;
-      const cy    = rect.top  + rect.height / 2;
-      const dx    = heroMouseX - cx;
-      const dy    = heroMouseY - cy;
-      const dist  = Math.sqrt(dx * dx + dy * dy);
-
-      let targetX = 0;
-      let targetY = 0;
-
-      if (dist < REPULSE_RADIUS && dist > 0) {
-        // Repulsão: quanto mais perto, mais forte
-        const force = (1 - dist / REPULSE_RADIUS) * REPULSE_FORCE;
-        targetX = -(dx / dist) * force;
-        targetY = -(dy / dist) * force;
-      } else if (dist < ATTRACT_RADIUS) {
-        // Atração suave na zona intermediária
-        const t     = (dist - REPULSE_RADIUS) / (ATTRACT_RADIUS - REPULSE_RADIUS);
-        const force = (1 - t) * ATTRACT_FORCE;
-        targetX = (dx / dist) * force * 0.4;
-        targetY = (dy / dist) * force * 0.4;
-      }
-
-      // Mola com amortecimento (spring physics)
-      const stiffness  = 0.14;
-      const damping    = 0.72;
-      state.vx = state.vx * damping + (targetX - state.ox) * stiffness;
-      state.vy = state.vy * damping + (targetY - state.oy) * stiffness;
-      state.ox += state.vx;
-      state.oy += state.vy;
-
-      // Aplica sem sobrescrever o CSS animation — usa translate separado
-      state.el.style.translate = `${state.ox.toFixed(2)}px ${state.oy.toFixed(2)}px`;
+    const hero = document.getElementById('hero');
+    hero.addEventListener('mousemove', (e) => {
+      heroMouseX = e.clientX;
+      heroMouseY = e.clientY;
     });
 
-    requestAnimationFrame(decoPhysics);
+    function decoPhysics() {
+      decoState.forEach(state => {
+        const rect  = state.el.getBoundingClientRect();
+        const cx    = rect.left + rect.width  / 2;
+        const cy    = rect.top  + rect.height / 2;
+        const dx    = heroMouseX - cx;
+        const dy    = heroMouseY - cy;
+        const dist  = Math.sqrt(dx * dx + dy * dy);
+
+        let targetX = 0;
+        let targetY = 0;
+
+        if (dist < REPULSE_RADIUS && dist > 0) {
+          const force = (1 - dist / REPULSE_RADIUS) * REPULSE_FORCE;
+          targetX = -(dx / dist) * force;
+          targetY = -(dy / dist) * force;
+        } else if (dist < ATTRACT_RADIUS) {
+          const t     = (dist - REPULSE_RADIUS) / (ATTRACT_RADIUS - REPULSE_RADIUS);
+          const force = (1 - t) * ATTRACT_FORCE;
+          targetX = (dx / dist) * force * 0.4;
+          targetY = (dy / dist) * force * 0.4;
+        }
+
+        const stiffness  = 0.14;
+        const damping    = 0.72;
+        state.vx = state.vx * damping + (targetX - state.ox) * stiffness;
+        state.vy = state.vy * damping + (targetY - state.oy) * stiffness;
+        state.ox += state.vx;
+        state.oy += state.vy;
+
+        state.el.style.translate = `${state.ox.toFixed(2)}px ${state.oy.toFixed(2)}px`;
+      });
+
+      requestAnimationFrame(decoPhysics);
+    }
+
+    decoPhysics();
+
+    // Parallax no bg — só faz sentido com mouse (desktop)
+    document.addEventListener('mousemove', (e) => {
+      const cx = (e.clientX / window.innerWidth  - 0.5) * 2;
+      const cy = (e.clientY / window.innerHeight - 0.5) * 2;
+      gsap.to('.hero__bg-img', { x: cx * 10, y: cy * 6, duration: 1.8, ease: 'power2.out' });
+    });
   }
-
-  decoPhysics();
-
-  // Parallax leve no bg ao mover o mouse (mantém)
-  document.addEventListener('mousemove', (e) => {
-    const cx = (e.clientX / window.innerWidth  - 0.5) * 2;
-    const cy = (e.clientY / window.innerHeight - 0.5) * 2;
-    gsap.to('.hero__bg-img', { x: cx * 10, y: cy * 6, duration: 1.8, ease: 'power2.out' });
-  });
 }
 
 /* ─── GSAP SCROLL TRIGGERS — motions em todas as seções ── */
@@ -725,57 +717,28 @@ function renderDepoimentos() {
     <button class="dep-dot${i === 0 ? ' active' : ''}" data-index="${i}" aria-label="Depoimento ${i + 1}"></button>
   `).join('');
 
-  const mobile = () => window.innerWidth <= 600;
-  const wrap   = document.querySelector('.dep-carousel-wrap');
+  // Dots
+  dots.querySelectorAll('.dep-dot').forEach(dot => {
+    dot.addEventListener('click', () => irParaDep(+dot.dataset.index));
+  });
 
-  if (mobile()) {
-    /* ── MOBILE: scroll-snap nativo ── */
+  // Setas
+  document.getElementById('depPrev').addEventListener('click', () => {
+    irParaDep((depAtual - 1 + depoimentos.length) % depoimentos.length);
+  });
+  document.getElementById('depNext').addEventListener('click', () => {
+    irParaDep((depAtual + 1) % depoimentos.length);
+  });
 
-    // Dots acompanham o scroll via IntersectionObserver
-    const cards = document.querySelectorAll('#depStage .card-dep');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const idx = +entry.target.dataset.index;
-          document.querySelectorAll('.dep-dot').forEach((d, i) => {
-            d.classList.toggle('active', i === idx);
-          });
-        }
-      });
-    }, { root: wrap, threshold: 0.6 });
+  // Posição inicial sem animação
+  posicionarCards(false);
 
-    cards.forEach(c => observer.observe(c));
+  // Auto-play
+  setInterval(() => {
+    irParaDep((depAtual + 1) % depoimentos.length);
+  }, 5500);
 
-    // Dots clicáveis fazem scroll suave até o card
-    dots.querySelectorAll('.dep-dot').forEach(dot => {
-      dot.addEventListener('click', () => {
-        const target = document.querySelector(`.card-dep[data-index="${dot.dataset.index}"]`);
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-      });
-    });
-
-  } else {
-    /* ── DESKTOP: carrossel GSAP ── */
-
-    dots.querySelectorAll('.dep-dot').forEach(dot => {
-      dot.addEventListener('click', () => irParaDep(+dot.dataset.index));
-    });
-
-    document.getElementById('depPrev').addEventListener('click', () => {
-      irParaDep((depAtual - 1 + depoimentos.length) % depoimentos.length);
-    });
-    document.getElementById('depNext').addEventListener('click', () => {
-      irParaDep((depAtual + 1) % depoimentos.length);
-    });
-
-    posicionarCards(false);
-
-    setInterval(() => {
-      irParaDep((depAtual + 1) % depoimentos.length);
-    }, 5500);
-  }
-
-  // Entrada com scroll (ambos)
+  // Entrada com scroll
   gsap.from('.dep-carousel-wrap', {
     scrollTrigger: { trigger: '.dep-carousel-wrap', start: 'top 80%', once: true },
     y: 50, opacity: 0, duration: 0.85, ease: 'power3.out'
@@ -786,7 +749,8 @@ function posicionarCards(animate) {
   const cards  = document.querySelectorAll('#depStage .card-dep');
   const wrap   = document.querySelector('.dep-carousel-wrap');
   const total  = depoimentos.length;
-  const xSide  = 420;
+  const mobile = window.innerWidth <= 600;
+  const xSide  = mobile ? window.innerWidth : 420;
 
   cards.forEach((card, i) => {
     const pos = ((i - depAtual) % total + total) % total;
@@ -794,15 +758,25 @@ function posicionarCards(animate) {
     if (pos === 0) {
       cfg = { x: 0,      scale: 1,    autoAlpha: 1,   zIndex: 10, y: 0,  pointerEvents: 'auto'  };
     } else if (pos === 1) {
-      cfg = { x: xSide,  scale: 0.76, autoAlpha: 0.5, zIndex: 5,  y: 28, pointerEvents: 'none'  };
+      cfg = { x: xSide,  scale: 0.76, autoAlpha: mobile ? 0 : 0.5, zIndex: 5, y: 28, pointerEvents: 'none' };
     } else if (pos === total - 1) {
-      cfg = { x: -xSide, scale: 0.76, autoAlpha: 0.5, zIndex: 5,  y: 28, pointerEvents: 'none'  };
+      cfg = { x: -xSide, scale: 0.76, autoAlpha: mobile ? 0 : 0.5, zIndex: 5, y: 28, pointerEvents: 'none' };
     } else {
-      cfg = { x: 0,      scale: 0.55, autoAlpha: 0,   zIndex: 1,  y: 0,  pointerEvents: 'none'  };
+      cfg = { x: 0,      scale: 0.55, autoAlpha: 0,   zIndex: 1,  y: 0,  pointerEvents: 'none' };
     }
     animate ? gsap.to(card, { ...cfg, duration: 0.65, ease: 'power3.inOut' })
             : gsap.set(card, cfg);
   });
+
+  // Mobile: ajusta altura do container ao card ativo para não cortar texto
+  if (mobile && wrap) {
+    const active = cards[depAtual];
+    if (active) {
+      // offsetHeight funciona mesmo com visibility:hidden — sem reflow extra
+      const h = active.offsetHeight;
+      if (h > 0) gsap.set(wrap, { height: h });
+    }
+  }
 }
 
 function irParaDep(index) {
