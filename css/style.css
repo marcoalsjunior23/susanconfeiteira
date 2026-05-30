@@ -1324,16 +1324,11 @@ body:has(button:hover) .cursor-follower { width: 56px; height: 56px; opacity: 0.
 @media (max-width: 600px) {
   .depoimentos { padding: 80px 0 72px; }
   .depoimentos__header { padding: 0 24px; margin-bottom: 40px; }
-  .dep-carousel-wrap { overflow: hidden; }
-  .dep-stage { position: relative; width: 100%; }
+  .dep-carousel-wrap { height: 480px; overflow: hidden; }
   .card-dep {
-    position: relative;
-    width: calc(100% - 48px);
-    max-width: 100%;
-    left: 50%;
-    transform: translateX(-50%);
+    width: calc(100vw - 48px);
+    left: 24px;
     padding: 24px 20px;
-    box-sizing: border-box;
   }
   .card-dep__texto { font-size: 1rem; line-height: 1.65; }
 }

@@ -758,9 +758,7 @@ function posicionarCards(animate) {
   const wrap   = document.querySelector('.dep-carousel-wrap');
   const total  = depoimentos.length;
   const mobile = window.innerWidth <= 600;
-  // No mobile usa a largura do card + gap para os cards laterais saírem da tela
-  const cardW  = mobile ? (window.innerWidth - 48) : 580;
-  const xSide  = mobile ? (cardW + 32) : 420;
+  const xSide  = mobile ? window.innerWidth : 420;
 
   cards.forEach((card, i) => {
     const pos = ((i - depAtual) % total + total) % total;
@@ -782,9 +780,11 @@ function posicionarCards(animate) {
   if (mobile && wrap) {
     const active = cards[depAtual];
     if (active) {
-      // Força o card ativo a ser visível para medir corretamente
-      const h = active.scrollHeight;
-      if (h > 0) gsap.set(wrap, { height: h + 16 });
+      // rAF garante que o card já tem layout antes de medir
+      requestAnimationFrame(() => {
+        const h = active.getBoundingClientRect().height || active.scrollHeight;
+        if (h > 0) gsap.set(wrap, { height: h + 16 });
+      });
     }
   }
 }
