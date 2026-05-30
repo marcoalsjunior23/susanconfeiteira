@@ -725,28 +725,57 @@ function renderDepoimentos() {
     <button class="dep-dot${i === 0 ? ' active' : ''}" data-index="${i}" aria-label="Depoimento ${i + 1}"></button>
   `).join('');
 
-  // Dots
-  dots.querySelectorAll('.dep-dot').forEach(dot => {
-    dot.addEventListener('click', () => irParaDep(+dot.dataset.index));
-  });
+  const mobile = () => window.innerWidth <= 600;
+  const wrap   = document.querySelector('.dep-carousel-wrap');
 
-  // Setas
-  document.getElementById('depPrev').addEventListener('click', () => {
-    irParaDep((depAtual - 1 + depoimentos.length) % depoimentos.length);
-  });
-  document.getElementById('depNext').addEventListener('click', () => {
-    irParaDep((depAtual + 1) % depoimentos.length);
-  });
+  if (mobile()) {
+    /* ── MOBILE: scroll-snap nativo ── */
 
-  // Posição inicial sem animação
-  posicionarCards(false);
+    // Dots acompanham o scroll via IntersectionObserver
+    const cards = document.querySelectorAll('#depStage .card-dep');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const idx = +entry.target.dataset.index;
+          document.querySelectorAll('.dep-dot').forEach((d, i) => {
+            d.classList.toggle('active', i === idx);
+          });
+        }
+      });
+    }, { root: wrap, threshold: 0.6 });
 
-  // Auto-play
-  setInterval(() => {
-    irParaDep((depAtual + 1) % depoimentos.length);
-  }, 5500);
+    cards.forEach(c => observer.observe(c));
 
-  // Entrada com scroll
+    // Dots clicáveis fazem scroll suave até o card
+    dots.querySelectorAll('.dep-dot').forEach(dot => {
+      dot.addEventListener('click', () => {
+        const target = document.querySelector(`.card-dep[data-index="${dot.dataset.index}"]`);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      });
+    });
+
+  } else {
+    /* ── DESKTOP: carrossel GSAP ── */
+
+    dots.querySelectorAll('.dep-dot').forEach(dot => {
+      dot.addEventListener('click', () => irParaDep(+dot.dataset.index));
+    });
+
+    document.getElementById('depPrev').addEventListener('click', () => {
+      irParaDep((depAtual - 1 + depoimentos.length) % depoimentos.length);
+    });
+    document.getElementById('depNext').addEventListener('click', () => {
+      irParaDep((depAtual + 1) % depoimentos.length);
+    });
+
+    posicionarCards(false);
+
+    setInterval(() => {
+      irParaDep((depAtual + 1) % depoimentos.length);
+    }, 5500);
+  }
+
+  // Entrada com scroll (ambos)
   gsap.from('.dep-carousel-wrap', {
     scrollTrigger: { trigger: '.dep-carousel-wrap', start: 'top 80%', once: true },
     y: 50, opacity: 0, duration: 0.85, ease: 'power3.out'
@@ -757,8 +786,7 @@ function posicionarCards(animate) {
   const cards  = document.querySelectorAll('#depStage .card-dep');
   const wrap   = document.querySelector('.dep-carousel-wrap');
   const total  = depoimentos.length;
-  const mobile = window.innerWidth <= 600;
-  const xSide  = mobile ? window.innerWidth : 420;
+  const xSide  = 420;
 
   cards.forEach((card, i) => {
     const pos = ((i - depAtual) % total + total) % total;
@@ -766,27 +794,15 @@ function posicionarCards(animate) {
     if (pos === 0) {
       cfg = { x: 0,      scale: 1,    autoAlpha: 1,   zIndex: 10, y: 0,  pointerEvents: 'auto'  };
     } else if (pos === 1) {
-      cfg = { x: xSide,  scale: 0.76, autoAlpha: mobile ? 0 : 0.5, zIndex: 5, y: 28, pointerEvents: 'none' };
+      cfg = { x: xSide,  scale: 0.76, autoAlpha: 0.5, zIndex: 5,  y: 28, pointerEvents: 'none'  };
     } else if (pos === total - 1) {
-      cfg = { x: -xSide, scale: 0.76, autoAlpha: mobile ? 0 : 0.5, zIndex: 5, y: 28, pointerEvents: 'none' };
+      cfg = { x: -xSide, scale: 0.76, autoAlpha: 0.5, zIndex: 5,  y: 28, pointerEvents: 'none'  };
     } else {
-      cfg = { x: 0,      scale: 0.55, autoAlpha: 0,   zIndex: 1,  y: 0,  pointerEvents: 'none' };
+      cfg = { x: 0,      scale: 0.55, autoAlpha: 0,   zIndex: 1,  y: 0,  pointerEvents: 'none'  };
     }
     animate ? gsap.to(card, { ...cfg, duration: 0.65, ease: 'power3.inOut' })
             : gsap.set(card, cfg);
   });
-
-  // Mobile: ajusta altura do container ao card ativo para não cortar texto
-  if (mobile && wrap) {
-    const active = cards[depAtual];
-    if (active) {
-      // rAF garante que o card já tem layout antes de medir
-      requestAnimationFrame(() => {
-        const h = active.getBoundingClientRect().height || active.scrollHeight;
-        if (h > 0) gsap.set(wrap, { height: h + 16 });
-      });
-    }
-  }
 }
 
 function irParaDep(index) {
