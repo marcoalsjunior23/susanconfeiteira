@@ -397,9 +397,7 @@ function initHeroAnim() {
     const ATTRACT_FORCE  = 18;
 
     const decoState = Array.from(decos).map(el => ({
-      el,
-      vx: 0, vy: 0,
-      ox: 0, oy: 0
+      el, vx: 0, vy: 0, ox: 0, oy: 0
     }));
 
     let heroMouseX = window.innerWidth / 2;
@@ -413,15 +411,14 @@ function initHeroAnim() {
 
     function decoPhysics() {
       decoState.forEach(state => {
-        const rect  = state.el.getBoundingClientRect();
-        const cx    = rect.left + rect.width  / 2;
-        const cy    = rect.top  + rect.height / 2;
-        const dx    = heroMouseX - cx;
-        const dy    = heroMouseY - cy;
-        const dist  = Math.sqrt(dx * dx + dy * dy);
+        const rect = state.el.getBoundingClientRect();
+        const cx   = rect.left + rect.width  / 2;
+        const cy   = rect.top  + rect.height / 2;
+        const dx   = heroMouseX - cx;
+        const dy   = heroMouseY - cy;
+        const dist = Math.sqrt(dx * dx + dy * dy);
 
-        let targetX = 0;
-        let targetY = 0;
+        let targetX = 0, targetY = 0;
 
         if (dist < REPULSE_RADIUS && dist > 0) {
           const force = (1 - dist / REPULSE_RADIUS) * REPULSE_FORCE;
@@ -434,19 +431,15 @@ function initHeroAnim() {
           targetY = (dy / dist) * force * 0.4;
         }
 
-        const stiffness  = 0.14;
-        const damping    = 0.72;
+        const stiffness = 0.14, damping = 0.72;
         state.vx = state.vx * damping + (targetX - state.ox) * stiffness;
         state.vy = state.vy * damping + (targetY - state.oy) * stiffness;
         state.ox += state.vx;
         state.oy += state.vy;
-
         state.el.style.translate = `${state.ox.toFixed(2)}px ${state.oy.toFixed(2)}px`;
       });
-
       requestAnimationFrame(decoPhysics);
     }
-
     decoPhysics();
 
     // Parallax no bg — só faz sentido com mouse (desktop)
@@ -733,10 +726,37 @@ function renderDepoimentos() {
   // Posição inicial sem animação
   posicionarCards(false);
 
-  // Auto-play
-  setInterval(() => {
-    irParaDep((depAtual + 1) % depoimentos.length);
-  }, 5500);
+  // Auto-play — só no desktop
+  if (window.innerWidth > 600) {
+    setInterval(() => {
+      irParaDep((depAtual + 1) % depoimentos.length);
+    }, 5500);
+  }
+
+  // Mobile: dots acompanham o scroll via IntersectionObserver
+  if (window.innerWidth <= 600) {
+    const wrap  = document.querySelector('.dep-carousel-wrap');
+    const cards = document.querySelectorAll('#depStage .card-dep');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const idx = +entry.target.dataset.index;
+          document.querySelectorAll('.dep-dot').forEach((d, i) => {
+            d.classList.toggle('active', i === idx);
+          });
+        }
+      });
+    }, { root: wrap, threshold: 0.6 });
+    cards.forEach(c => observer.observe(c));
+
+    // Dots clicáveis: scroll suave até o card
+    dots.querySelectorAll('.dep-dot').forEach(dot => {
+      dot.addEventListener('click', () => {
+        const target = document.querySelector(`.card-dep[data-index="${dot.dataset.index}"]`);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      });
+    });
+  }
 
   // Entrada com scroll
   gsap.from('.dep-carousel-wrap', {
